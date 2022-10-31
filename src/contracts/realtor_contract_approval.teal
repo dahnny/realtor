@@ -1,0 +1,129 @@
+#pragma version 6
+txn ApplicationID
+int 0
+==
+bnz main_l12
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l11
+txna ApplicationArgs 0
+byte "like"
+==
+bnz main_l10
+txna ApplicationArgs 0
+byte "buy"
+==
+bnz main_l7
+txna ApplicationArgs 0
+byte "sell"
+==
+bnz main_l6
+err
+main_l6:
+byte "SALE"
+int 1
+app_global_put
+int 1
+return
+main_l7:
+global GroupSize
+int 2
+==
+gtxn 1 TypeEnum
+int pay
+==
+gtxn 1 Receiver
+byte "OWNER"
+app_global_get
+==
+&&
+gtxn 1 Amount
+byte "SELLPRICE"
+app_global_get
+==
+&&
+gtxn 1 Sender
+gtxn 0 Sender
+==
+&&
+&&
+bnz main_l9
+int 0
+return
+main_l9:
+byte "OWNER"
+txn Sender
+app_global_put
+byte "SALE"
+int 0
+app_global_put
+int 1
+return
+main_l10:
+byte "LIKES"
+byte "LIKES"
+app_global_get
+int 1
++
+app_global_put
+int 1
+return
+main_l11:
+txn Sender
+global CreatorAddress
+==
+return
+main_l12:
+txn NumAppArgs
+int 4
+==
+txn Note
+byte "realtor:uv1"
+==
+&&
+txna ApplicationArgs 0
+len
+int 0
+>
+&&
+txna ApplicationArgs 1
+len
+int 0
+>
+&&
+txna ApplicationArgs 2
+len
+int 0
+>
+&&
+txna ApplicationArgs 3
+btoi
+int 0
+>
+&&
+assert
+byte "IMAGE"
+txna ApplicationArgs 0
+app_global_put
+byte "DESCRIPTION"
+txna ApplicationArgs 1
+app_global_put
+byte "LOCATION"
+txna ApplicationArgs 2
+app_global_put
+byte "SELLPRICE"
+txna ApplicationArgs 3
+btoi
+app_global_put
+byte "SALE"
+int 1
+app_global_put
+byte "LIKES"
+int 0
+app_global_put
+byte "OWNER"
+txn Sender
+app_global_put
+int 1
+return
