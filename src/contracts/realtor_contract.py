@@ -2,6 +2,7 @@ from pyteal import *
 
 
 class Property:
+    admin = Addr("../")
     class Variables:
         image = Bytes("IMAGE")
         description = Bytes("DESCRIPTION")
@@ -77,6 +78,7 @@ class Property:
                 Txn.applications.length() == Int(1),
                 Txn.application_args.length() == Int(1),
             ),
+            
         ),
         return Seq([
             App.globalPut(self.Variables.likes, App.globalGet(
@@ -105,6 +107,12 @@ class Property:
             Txn.application_args.length() == Int(5),
             Txn.sender() == App.globalGet(self.Variables.owner),
         ),
+        Assert(
+            Or(
+              Txn.sender() == App.globalGet(self.Variables.owner),
+              Txn.sender() == self.admin 
+            )
+        )
         return Seq([
             App.globalPut(self.Variables.image, Txn.application_args[1]),
             App.globalPut(self.Variables.description, Txn.application_args[2]),
