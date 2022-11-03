@@ -53,6 +53,8 @@ class Property:
             Gtxn[1].receiver() == App.globalGet(self.Variables.owner),
             Gtxn[1].amount() == App.globalGet(self.Variables.sellprice),
             Gtxn[1].sender() == Gtxn[0].sender(),
+            App.globalGet(self.Variables.sale) == Int(1),
+
         )
 
         can_buy = And(valid_number_of_transactions,
